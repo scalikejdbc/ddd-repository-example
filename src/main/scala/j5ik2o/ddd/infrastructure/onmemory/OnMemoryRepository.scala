@@ -1,7 +1,8 @@
-package scalikejdbc.ddd.infrastructure
+package j5ik2o.ddd.infrastructure.onmemory
 
 import scala.util.{ Success, Try }
-import scalikejdbc.ddd.infrastructure.exception.EntityNotFoundException
+import j5ik2o.ddd.infrastructure._
+import scala.util.Success
 
 abstract class OnMemoryRepository[ID <: Identifier[_], E <: Entity[ID]](entities: Map[ID, E])
     extends Repository[ID, E] {

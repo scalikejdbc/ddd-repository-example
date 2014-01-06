@@ -1,5 +1,5 @@
 package persondb.domain.person
 
-import scalikejdbc.ddd.infrastructure.Repository
+import j5ik2o.ddd.infrastructure.Repository
 
 trait PersonRepository extends Repository[PersonId, Person]

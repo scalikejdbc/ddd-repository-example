@@ -1,4 +1,4 @@
-package scalikejdbc.ddd.infrastructure.exception
+package j5ik2o.ddd.infrastructure
 
 /**
  * Represents IO error.

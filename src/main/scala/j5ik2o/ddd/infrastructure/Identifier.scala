@@ -1,7 +1,7 @@
-package scalikejdbc.ddd.infrastructure
+package j5ik2o.ddd.infrastructure
 
 /**
- * [[scalikejdbc.ddd.infrastructure.Entity]] identifier.
+ * Entity identifier.
  *
  * @tparam A value type of identifier
  */

@@ -1,4 +1,4 @@
-package scalikejdbc.ddd.infrastructure
+package j5ik2o.ddd.infrastructure
 
 /**
  * Represents empty identifier.

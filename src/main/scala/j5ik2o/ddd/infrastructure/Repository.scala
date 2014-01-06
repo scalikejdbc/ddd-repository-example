@@ -1,12 +1,9 @@
-package scalikejdbc.ddd.infrastructure
+package j5ik2o.ddd.infrastructure
 
 import scala.util.{ Failure, Success, Try }
 
 /**
  * Represents responsibility of repository in DDD.
- *
- * @tparam ID type of identifier
- * @tparam E type of entity
  */
 trait Repository[ID <: Identifier[_], E <: Entity[ID]] {
 
@@ -25,26 +22,25 @@ trait Repository[ID <: Identifier[_], E <: Entity[ID]] {
 
   def resolveEntity(identifier: ID)(implicit ctx: Ctx): Try[E]
 
-  def resolveEntities(identities: Seq[ID])(implicit ctx: Ctx): Try[Seq[E]] = traverse(identities)(resolveEntity)
+  def resolveEntities(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Seq[E]] = traverse(identifiers)(resolveEntity)
 
   def storeEntity(entity: E)(implicit ctx: Ctx): Try[(This, E)]
 
   def storeEntities(entities: Seq[E])(implicit ctx: Ctx): Try[(This, Seq[E])] = {
     // asInstanceOf is required
-    traverseWithThis(entities) { (repository, entity) => repository.storeEntity(entity).asInstanceOf[Try[(This, E)]] }
+    traverseWithThis(entities) { (repo, entity) => repo.storeEntity(entity).asInstanceOf[Try[(This, E)]] }
   }
 
   def deleteByIdentifier(identifier: ID)(implicit ctx: Ctx): Try[(This, E)]
 
-  def deleteByIdentifiers(identities: ID*)(implicit ctx: Ctx): Try[(This, Seq[E])] = {
+  def deleteByIdentifiers(identifiers: ID*)(implicit ctx: Ctx): Try[(This, Seq[E])] = {
     // asInstanceOf is required
-    traverseWithThis(identities) { (repository, identity) => repository.deleteByIdentifier(identity).asInstanceOf[Try[(This, E)]] }
+    traverseWithThis(identifiers) { (repo, id) => repo.deleteByIdentifier(id).asInstanceOf[Try[(This, E)]] }
   }
 
   protected final def traverseWithThis[A](values: Seq[A])(processor: (This, A) => Try[(This, E)])(implicit ctx: Ctx): Try[(This, Seq[E])] = Try {
     values.foldLeft((this.asInstanceOf[This], Seq.empty[E])) {
-      case ((repo, entities), value) =>
-        processor(repo, value).map { case (r, e) => (r, entities :+ e) }.get
+      case ((repo, entities), value) => processor(repo, value).map { case (r, e) => (r, entities :+ e) }.get
     }
   }
 
@@ -53,9 +49,9 @@ trait Repository[ID <: Identifier[_], E <: Entity[ID]] {
   }
 
   protected def traverse[A, R](values: Seq[A], forceSuccess: Boolean = false)(f: (A) => Try[R])(implicit ctx: Ctx): Try[Seq[R]] = {
-    values.map(f).foldLeft(Try(Seq.empty[R])) { (resultTry, resolveTry) =>
-      (for { result <- resultTry; entity <- resolveTry } yield result :+ entity).recoverWith {
-        case e => if (forceSuccess) Success(resultTry.getOrElse(Seq.empty[R])) else Failure(e)
+    values.map(f).foldLeft(Try(Seq.empty[R])) { (entitiesTry, entityTry) =>
+      (for { entities <- entitiesTry; entity <- entityTry } yield entities :+ entity).recoverWith {
+        case e => if (forceSuccess) Success(entitiesTry.getOrElse(Seq.empty[R])) else Failure(e)
       }
     }
   }

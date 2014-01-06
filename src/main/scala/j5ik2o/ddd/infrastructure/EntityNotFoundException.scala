@@ -1,6 +1,4 @@
-package scalikejdbc.ddd.infrastructure.exception
-
-import scalikejdbc.ddd.infrastructure.Identifier
+package j5ik2o.ddd.infrastructure
 
 /**
  * Represents entity not found.

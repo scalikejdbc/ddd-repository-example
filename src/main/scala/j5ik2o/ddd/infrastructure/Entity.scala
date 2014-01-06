@@ -1,9 +1,7 @@
-package scalikejdbc.ddd.infrastructure
+package j5ik2o.ddd.infrastructure
 
 /**
  * Represents responsibility of an entity in DDD
- *
- * @tparam ID [[scalikejdbc.ddd.infrastructure.Identifier]]
  */
 trait Entity[ID <: Identifier[_]] {
 

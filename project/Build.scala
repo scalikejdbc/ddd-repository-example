@@ -13,11 +13,11 @@ object ScalikeJDBCDDDRepositoryProject extends Build {
         "org.scalikejdbc"        %% "scalikejdbc"               % "[1.7,)"  % "compile",
         "org.scalikejdbc"        %% "scalikejdbc-interpolation" % "[1.7,)"  % "compile",
         "org.skinny-framework"   %% "skinny-orm"                % "[0.9,)"  % "compile",
-        "ch.qos.logback"         %  "logback-classic"           % "1.0.13"  % "test",
         "org.scalikejdbc"        %% "scalikejdbc-test"          % "[1.7,)"  % "test",
         "com.h2database"         %  "h2"                        % "1.3.174" % "test",
         "org.json4s"             %% "json4s-ext"                % "3.2.4"   % "test",
         "org.json4s"             %% "json4s-jackson"            % "3.2.4"   % "test",
+        "ch.qos.logback"         %  "logback-classic"           % "1.0.13"  % "test",
         "com.github.nscala-time" %% "nscala-time"               % "0.6.0"   % "test",
         "org.specs2"             %% "specs2"                    % "2.0"     % "test"
       )}

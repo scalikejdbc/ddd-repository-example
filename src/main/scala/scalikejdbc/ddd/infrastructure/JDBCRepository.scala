@@ -1,15 +1,15 @@
 package scalikejdbc.ddd.infrastructure
 
 import scala.util.Try
+import j5ik2o.ddd.infrastructure._
+
 import scalikejdbc._, SQLInterpolation._
 import skinny.orm._
-import scalikejdbc.ddd.infrastructure.exception.{ RepositoryIOException, EntityNotFoundException }
 
 /**
  * JDBC Repository implementation.
  */
-abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]]
-    extends Repository[ID, E] with SkinnyCRUDMapper[E] {
+abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]] extends Repository[ID, E] with SkinnyCRUDMapper[E] {
 
   override def primaryKeyName = "id"
   override def defaultAlias = syntax
@@ -17,23 +17,30 @@ abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]]
 
   protected def toNamedValues(entity: E): Seq[(Symbol, Any)]
 
-  protected def extractDBSession(ctx: EntityIOContext): DBSession = ctx match {
-    case JDBCEntityIOContext(dbSession) => dbSession
-    case _ => throw new IllegalStateException(s"Unexpected context is bound (expected: JDBCEntityIOContext, actual: $ctx)")
+  protected def withDBSession[A](ctx: EntityIOContext)(f: DBSession => A): Try[A] = Try {
+    ctx match {
+      case JDBCEntityIOContext(dbSession) => f(dbSession)
+      case _ => throw new IllegalStateException(s"Unexpected context is bound (expected: JDBCEntityIOContext, actual: $ctx)")
+    }
   }
 
-  def existByIdentifier(identifier: ID)(implicit ctx: EntityIOContext): Try[Boolean] = Try {
-    implicit val dbSession = extractDBSession(ctx)
+  def existByIdentifier(identifier: ID)(implicit ctx: EntityIOContext): Try[Boolean] = withDBSession(ctx) { implicit s =>
     countBy(sqls.eq(column.c(primaryKeyName), identifier.value)) > 0
   }
 
-  def resolveEntity(identifier: ID)(implicit ctx: EntityIOContext): Try[E] = Try {
-    implicit val dbSession = extractDBSession(ctx)
+  override def existByIdentifiers(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Boolean] = withDBSession(ctx) { implicit s =>
+    countBy(sqls.in(column.c(primaryKeyName), identifiers.map(_.value))) > 0
+  }
+
+  def resolveEntity(identifier: ID)(implicit ctx: EntityIOContext): Try[E] = withDBSession(ctx) { implicit s =>
     findBy(sqls.eq(column.c(primaryKeyName), identifier.value)).getOrElse(throw EntityNotFoundException(identifier))
   }
 
-  def storeEntity(entity: E)(implicit ctx: EntityIOContext): Try[(This, E)] = Try {
-    implicit val dbSession = extractDBSession(ctx)
+  override def resolveEntities(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Seq[E]] = withDBSession(ctx) { implicit s =>
+    findAllBy(sqls.eq(column.c(primaryKeyName), identifiers.map(_.value)))
+  }
+
+  def storeEntity(entity: E)(implicit ctx: EntityIOContext): Try[(This, E)] = withDBSession(ctx) { implicit s =>
     if (entity.id.isDefined) {
       val notFound = updateBy(sqls.eq(column.c(primaryKeyName), entity.id.value)).withAttributes(toNamedValues(entity): _*) == 0
       if (notFound) {
@@ -45,15 +52,14 @@ abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]]
     (this.asInstanceOf[This], entity)
   }
 
-  def deleteByIdentifier(identifier: ID)(implicit ctx: EntityIOContext): Try[(This, E)] = {
-    implicit val dbSession = extractDBSession(ctx)
-    Try(findBy(sqls.eq(column.c(primaryKeyName), identifier.value)).map { entity =>
+  def deleteByIdentifier(identifier: ID)(implicit ctx: EntityIOContext): Try[(This, E)] = withDBSession(ctx) { implicit s =>
+    findBy(sqls.eq(column.c(primaryKeyName), identifier.value)).map { entity =>
       if (deleteBy(sqls.eq(column.c(primaryKeyName), identifier.value)) > 0) {
         (this.asInstanceOf[This], entity)
       } else {
         throw RepositoryIOException(s"Failed to delete $identifier")
       }
-    }.getOrElse(throw RepositoryIOException(s"Failed to delete $identifier")))
+    }.getOrElse(throw RepositoryIOException(s"Failed to delete $identifier"))
   }
 
 }

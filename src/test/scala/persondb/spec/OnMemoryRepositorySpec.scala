@@ -2,7 +2,7 @@ package persondb.spec
 
 import org.specs2.mutable.Specification
 import persondb.domain.person.{ PersonRepository, PersonId, Person }
-import scalikejdbc.ddd.infrastructure.{ OnMemoryEntityIOContext, OnMemoryRepository }
+import j5ik2o.ddd.infrastructure.onmemory.{ OnMemoryRepository, OnMemoryEntityIOContext }
 
 class OnMemoryRepositorySpec extends Specification {
 
