@@ -1,15 +1,14 @@
 package scalikejdbc.ddd.infrastructure
 
 /**
- * TODO English doc
- * DDDのエンティティ責務を表すトレイト。
+ * Represents responsibility of an entity in DDD
  *
  * @tparam ID [[scalikejdbc.ddd.infrastructure.Identifier]]
  */
 trait Entity[ID <: Identifier[_]] {
 
   /**
-   * 識別子。
+   * Identifier
    */
   val id: ID
 

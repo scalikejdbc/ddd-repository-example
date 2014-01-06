@@ -7,10 +7,13 @@ object ScalikeJDBCDDDRepositoryProject extends Build {
     settings =  Defaults.defaultSettings ++ Seq(
       organization := "org.scalikejdbc",
       name         := "scalikejdbc-ddd-repository",
+      scalaVersion := "2.10.3",
       version      := "0.1.0-SNAPSHOT",
       libraryDependencies <++= (scalaVersion) { scalaVersion => Seq(
         "org.scalikejdbc"        %% "scalikejdbc"               % "[1.7,)"  % "compile",
         "org.scalikejdbc"        %% "scalikejdbc-interpolation" % "[1.7,)"  % "compile",
+        "org.skinny-framework"   %% "skinny-orm"                % "[0.9,)"  % "compile",
+        "ch.qos.logback"         %  "logback-classic"           % "1.0.13"  % "test",
         "org.scalikejdbc"        %% "scalikejdbc-test"          % "[1.7,)"  % "test",
         "com.h2database"         %  "h2"                        % "1.3.174" % "test",
         "org.json4s"             %% "json4s-ext"                % "3.2.4"   % "test",

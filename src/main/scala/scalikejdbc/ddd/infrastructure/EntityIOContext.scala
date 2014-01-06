@@ -1,12 +1,9 @@
 package scalikejdbc.ddd.infrastructure
 
 /**
- * TODO English doc
- * [[scalikejdbc.ddd.infrastructure.Repository]]で
- * [[scalikejdbc.ddd.infrastructure.Entity]]をIOする際に
- * 利用されるコンテキスト。
+ * IO context of [[scalikejdbc.ddd.infrastructure.Entity]] for [[scalikejdbc.ddd.infrastructure.Repository]].
  *
- * コンテキストには様々な情報が渡されるが、主にインフラストラクチャ層の永続化のために利用される。
+ * Though this context has some kinds of information, basically it will be used for persistence in infrastructure layer.
  */
 trait EntityIOContext
 

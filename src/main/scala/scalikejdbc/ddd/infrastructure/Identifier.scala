@@ -1,25 +1,23 @@
 package scalikejdbc.ddd.infrastructure
 
 /**
- * TODO English doc
- * [[scalikejdbc.ddd.infrastructure.Entity]]の識別子を表すトレイト。
+ * [[scalikejdbc.ddd.infrastructure.Entity]] identifier.
  *
- * @tparam A 識別子の値型
+ * @tparam A value type of identifier
  */
 trait Identifier[+A] {
 
   /**
-   * 識別子の値。
+   * Identifier value.
    */
-  def value: A
+  val value: A
 
   val isDefined: Boolean = true
 
   val isEmpty: Boolean = !isDefined
 
   override def equals(obj: Any) = obj match {
-    case that: Identifier[_] =>
-      value == that.value
+    case that: Identifier[_] => value == that.value
     case _ => false
   }
 

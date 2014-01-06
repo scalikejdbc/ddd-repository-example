@@ -3,123 +3,61 @@ package scalikejdbc.ddd.infrastructure
 import scala.util.{ Failure, Success, Try }
 
 /**
- * TODO English doc
- * DDDのリポジトリ責務を表すトレイト。
+ * Represents responsibility of repository in DDD.
  *
- * @tparam ID 識別子の型
- * @tparam E エンティティの型
+ * @tparam ID type of identifier
+ * @tparam E type of entity
  */
 trait Repository[ID <: Identifier[_], E <: Entity[ID]] {
 
   /**
-   * リポジトリの派生型。
+   * Derived type of repository.
    */
   type This <: Repository[ID, E]
 
-  protected final def forEachEntities[A](tasks: Seq[A])(processor: (This, A) => Try[(This, E)])(implicit ctx: EntityIOContext): Try[(This, Seq[E])] = Try {
-    val result = tasks.foldLeft[(This, Seq[E])]((this.asInstanceOf[This], Seq.empty[E])) {
-      (resultWithEntities, task) =>
-        val resultWithEntity = processor(resultWithEntities._1, task).get
-        (resultWithEntity._1.asInstanceOf[This], resultWithEntities._2 :+ resultWithEntity._2)
-    }
-    (result._1, result._2)
+  type Ctx = EntityIOContext
+
+  def existByIdentifier(identifier: ID)(implicit ctx: Ctx): Try[Boolean]
+
+  def existByIdentifiers(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Boolean] = {
+    traverse(identifiers)(existByIdentifier).map(_.forall(_ == true))
   }
 
-  /**
-   * エンティティが存在するかを検証する。
-   *
-   * @param identifier [[scalikejdbc.ddd.infrastructure.Identifier]]
-   * @param ctx [[scalikejdbc.ddd.infrastructure.EntityIOContext]]
-   * @return `Try`でラップされたBoolean。存在する場合はtrue
-   * @throws EntityNotFoundException エンティティが見つからない場合
-   * @throws RepositoryIOException I/Oエラー
-   */
-  def containsByIdentifier(identifier: ID)(implicit ctx: EntityIOContext): Try[Boolean]
+  def resolveEntity(identifier: ID)(implicit ctx: Ctx): Try[E]
 
-  def containsByIdentifiers(identifiers: Seq[ID])(implicit ctx: EntityIOContext): Try[Boolean] =
-    traverse(identifiers, force = false)(containsByIdentifier).map(_.forall(_ == true))
+  def resolveEntities(identities: Seq[ID])(implicit ctx: Ctx): Try[Seq[E]] = traverse(identities)(resolveEntity)
 
-  /**
-   * 識別子からエンティティを解決する。
-   *
-   * @param identifier [[scalikejdbc.ddd.infrastructure.Identifier]]
-   * @param ctx [[scalikejdbc.ddd.infrastructure.EntityIOContext]]
-   * @return `Try`でラップされたエンティティ
-   * @throws EntityNotFoundException エンティティが見つからない場合
-   * @throws RepositoryIOException I/Oエラー
-   */
-  def resolveEntity(identifier: ID)(implicit ctx: EntityIOContext): Try[E]
+  def storeEntity(entity: E)(implicit ctx: Ctx): Try[(This, E)]
 
-  protected def traverse[V, R](values: Seq[V], force: Boolean = true)(f: (V) => Try[R])(implicit ctx: EntityIOContext): Try[Seq[R]] = {
-    values.map(f).foldLeft(Try(Seq.empty[R])) {
-      (resultTry, resolveTry) =>
-        resultTry.flatMap {
-          result =>
-            resolveTry.map {
-              entity =>
-                result :+ entity
-            }.recoverWith {
-              case ex: EntityNotFoundException =>
-                if (force) {
-                  Success(result)
-                } else {
-                  Failure(ex)
-                }
-            }
-        }
+  def storeEntities(entities: Seq[E])(implicit ctx: Ctx): Try[(This, Seq[E])] = {
+    // asInstanceOf is required
+    traverseWithThis(entities) { (repository, entity) => repository.storeEntity(entity).asInstanceOf[Try[(This, E)]] }
+  }
+
+  def deleteByIdentifier(identifier: ID)(implicit ctx: Ctx): Try[(This, E)]
+
+  def deleteByIdentifiers(identities: ID*)(implicit ctx: Ctx): Try[(This, Seq[E])] = {
+    // asInstanceOf is required
+    traverseWithThis(identities) { (repository, identity) => repository.deleteByIdentifier(identity).asInstanceOf[Try[(This, E)]] }
+  }
+
+  protected final def traverseWithThis[A](values: Seq[A])(processor: (This, A) => Try[(This, E)])(implicit ctx: Ctx): Try[(This, Seq[E])] = Try {
+    values.foldLeft((this.asInstanceOf[This], Seq.empty[E])) {
+      case ((repo, entities), value) =>
+        processor(repo, value).map { case (r, e) => (r, entities :+ e) }.get
     }
   }
 
-  /**
-   * 複数の識別子に対応するエンティティを解決する。
-   *
-   * `resolveEntity`を使って複数のエンティティを解決します。リポジトリが対応するストレージによっては
-   * 効率がよくない場合がある。その場合は、このメソッドをオーバーライドすべきです。
-   *
-   * @param identities 識別子の集合
-   * @param ctx [[scalikejdbc.ddd.infrastructure.EntityIOContext]]
-   * @return `Try`でラップされたエンティティ
-   * @throws RepositoryIOException I/Oエラー
-   */
-  def resolveEntities(identities: Seq[ID])(implicit ctx: EntityIOContext): Try[Seq[E]] =
-    traverse(identities)(resolveEntity)
+  protected def traverseWithoutFailures[A, R](values: Seq[A])(f: (A) => Try[R])(implicit ctx: Ctx): Try[Seq[R]] = {
+    traverse[A, R](values, true)(f)
+  }
 
-  /**
-   * エンティティを保存する。
-   *
-   * リポジトリにエンティティを保存すると、リポジトリはそのエンティティを含む新しいインスタンスと
-   * 保存されたエンティティを返します。
-   *
-   * @param entity エンティティ
-   * @param ctx [[scalikejdbc.ddd.infrastructure.EntityIOContext]]
-   * @return `Try`でラップされたタプル。
-   * @throws RepositoryIOException I/Oエラー
-   */
-  def storeEntity(entity: E)(implicit ctx: EntityIOContext): Try[(This, E)]
-
-  def storeEntities(entities: Seq[E])(implicit ctx: EntityIOContext): Try[(This, Seq[E])] =
-    forEachEntities(entities) {
-      (repository, entity) =>
-        repository.storeEntity(entity).asInstanceOf[Try[(This, E)]]
+  protected def traverse[A, R](values: Seq[A], forceSuccess: Boolean = false)(f: (A) => Try[R])(implicit ctx: Ctx): Try[Seq[R]] = {
+    values.map(f).foldLeft(Try(Seq.empty[R])) { (resultTry, resolveTry) =>
+      (for { result <- resultTry; entity <- resolveTry } yield result :+ entity).recoverWith {
+        case e => if (forceSuccess) Success(resultTry.getOrElse(Seq.empty[R])) else Failure(e)
+      }
     }
-
-  /**
-   * エンティティを削除する。
-   *
-   * リポジトリにエンティティを削除すると、リポジトリはそのエンティティを含まない新しいインスタンスと
-   * 削除されたエンティティを返します。
-   *
-   * @param identifier 識別子
-   * @param ctx [[scalikejdbc.ddd.infrastructure.EntityIOContext]]
-   * @return `Try`でラップされたタプル。
-   * @throws RepositoryIOException I/Oエラー
-   */
-  def deleteByIdentifier(identifier: ID)(implicit ctx: EntityIOContext): Try[(This, E)]
-
-  def deleteByIdentifiers(identities: ID*)(implicit ctx: EntityIOContext): Try[(This, Seq[E])] =
-    forEachEntities(identities) {
-      (repository, identity) =>
-        repository.deleteByIdentifier(identity).asInstanceOf[Try[(This, E)]]
-    }
+  }
 
 }

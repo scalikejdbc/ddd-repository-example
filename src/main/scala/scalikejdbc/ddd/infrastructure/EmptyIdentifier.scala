@@ -1,10 +1,16 @@
 package scalikejdbc.ddd.infrastructure
 
+/**
+ * Represents empty identifier.
+ */
 object EmptyIdentifier extends EmptyIdentifier
 
+/**
+ * Represents empty identifier.
+ */
 trait EmptyIdentifier extends Identifier[Nothing] {
 
-  def value: Nothing = throw new NoSuchElementException
+  override val value: Nothing = throw new NoSuchElementException
 
   override val isDefined = false
 
