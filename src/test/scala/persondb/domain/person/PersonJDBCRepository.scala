@@ -11,13 +11,12 @@ case class PersonJDBCRepository() extends JDBCRepository[PersonId, Person] with 
 
   override def extract(rs: WrappedResultSet, p: ResultName[Person]): Person = new Person(
     id = PersonId(java.util.UUID.fromString(rs.get(p.id))),
-    firstName = rs.get(p.firstName),
-    lastName = rs.get(p.lastName)
+    name = Name(rs.get(p.field("firstName")), rs.get(p.field("lastName")))
   )
 
   override def toNamedValues(entity: Person): Seq[(Symbol, Any)] = Seq(
     'id -> entity.id.value,
-    'firstName -> entity.firstName,
-    'lastName -> entity.lastName
+    'firstName -> entity.name.firstName,
+    'lastName -> entity.name.lastName
   )
 }

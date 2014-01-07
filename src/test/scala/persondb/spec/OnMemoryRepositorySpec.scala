@@ -1,7 +1,7 @@
 package persondb.spec
 
 import org.specs2.mutable.Specification
-import persondb.domain.person.{ PersonRepository, PersonId, Person }
+import persondb.domain.person.{ Name, PersonRepository, PersonId, Person }
 import j5ik2o.ddd.infrastructure.onmemory.{ OnMemoryRepository, OnMemoryEntityIOContext }
 
 class OnMemoryRepositorySpec extends Specification {
@@ -17,7 +17,7 @@ class OnMemoryRepositorySpec extends Specification {
   "repository" should {
     "stores a entity" in {
       val personId = PersonId()
-      val person = Person(personId, "Junichi", "Kato")
+      val person = Person(personId, Name("Junichi", "Kato"))
       PersonOnMemoryRepository().
         storeEntity(person) must beSuccessfulTry.like {
           case (PersonOnMemoryRepository(entities), _) => entities.contains(personId) must beTrue
@@ -26,7 +26,7 @@ class OnMemoryRepositorySpec extends Specification {
 
     "contains a entity" in {
       val personId = PersonId()
-      val person = Person(personId, "Junichi", "Kato")
+      val person = Person(personId, Name("Junichi", "Kato"))
       val entities = Map(personId -> person)
       entities.contains(personId) must beTrue
       PersonOnMemoryRepository(entities).
@@ -35,7 +35,7 @@ class OnMemoryRepositorySpec extends Specification {
 
     "gets a entity" in {
       val personId = PersonId()
-      val person = Person(personId, "Junichi", "Kato")
+      val person = Person(personId, Name("Junichi", "Kato"))
       PersonOnMemoryRepository(Map(personId -> person)).
         resolveEntity(personId) must beSuccessfulTry.like {
           case entity => entity must_== person
@@ -44,7 +44,7 @@ class OnMemoryRepositorySpec extends Specification {
 
     "deletes a entity" in {
       val personId = PersonId()
-      val person = Person(personId, "Junichi", "Kato")
+      val person = Person(personId, Name("Junichi", "Kato"))
       PersonOnMemoryRepository(Map(personId -> person)).
         deleteByIdentifier(personId) must beSuccessfulTry.like {
           case (PersonOnMemoryRepository(entities), _) => entities.contains(personId) must beFalse
