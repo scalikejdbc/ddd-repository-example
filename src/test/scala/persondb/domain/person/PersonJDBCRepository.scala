@@ -5,6 +5,7 @@ import scalikejdbc.ddd.infrastructure.JDBCRepository
 
 case class PersonJDBCRepository() extends JDBCRepository[PersonId, Person] with PersonRepository {
   type This = PersonRepository
+  override def defaultAlias = createAlias("p")
   override val connectionPoolName = 'person
   override val tableName = "person"
 
@@ -15,7 +16,7 @@ case class PersonJDBCRepository() extends JDBCRepository[PersonId, Person] with 
   )
 
   override def toNamedValues(entity: Person): Seq[(Symbol, Any)] = Seq(
-    'id -> entity.id.value.toString,
+    'id -> entity.id.value,
     'firstName -> entity.firstName,
     'lastName -> entity.lastName
   )

@@ -12,7 +12,7 @@ import skinny.orm._
 abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]] extends Repository[ID, E] with SkinnyCRUDMapper[E] {
 
   override def primaryKeyName = "id"
-  override def defaultAlias = syntax
+  override def defaultAlias = createAlias(tableName)
   override def useAutoIncrementPrimaryKey = false
 
   protected def toNamedValues(entity: E): Seq[(Symbol, Any)]
@@ -25,24 +25,25 @@ abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]] extends Repo
   }
 
   def existByIdentifier(identifier: ID)(implicit ctx: EntityIOContext): Try[Boolean] = withDBSession(ctx) { implicit s =>
-    countBy(sqls.eq(column.c(primaryKeyName), identifier.value)) > 0
+    countBy(sqls.eq(defaultAlias.field(primaryKeyName), identifier.value)) > 0
   }
 
   override def existByIdentifiers(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Boolean] = withDBSession(ctx) { implicit s =>
-    countBy(sqls.in(column.c(primaryKeyName), identifiers.map(_.value))) > 0
+    countBy(sqls.in(defaultAlias.field(primaryKeyName), identifiers.map(_.value))) > 0
   }
 
   def resolveEntity(identifier: ID)(implicit ctx: EntityIOContext): Try[E] = withDBSession(ctx) { implicit s =>
-    findBy(sqls.eq(column.c(primaryKeyName), identifier.value)).getOrElse(throw EntityNotFoundException(identifier))
+    findBy(sqls.eq(defaultAlias.field(primaryKeyName), identifier.value)).getOrElse(throw EntityNotFoundException(identifier))
   }
 
   override def resolveEntities(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Seq[E]] = withDBSession(ctx) { implicit s =>
-    findAllBy(sqls.eq(column.c(primaryKeyName), identifiers.map(_.value)))
+    findAllBy(sqls.eq(defaultAlias.field(primaryKeyName), identifiers.map(_.value)))
   }
 
   def storeEntity(entity: E)(implicit ctx: EntityIOContext): Try[(This, E)] = withDBSession(ctx) { implicit s =>
     if (entity.id.isDefined) {
-      val notFound = updateBy(sqls.eq(column.c(primaryKeyName), entity.id.value)).withAttributes(toNamedValues(entity): _*) == 0
+      val notFound = updateBy(sqls.eq(column.field(primaryKeyName), entity.id.value))
+        .withAttributes(toNamedValues(entity).filterNot { case (k, _) => k.name == primaryKeyName }: _*) == 0
       if (notFound) {
         createWithAttributes(toNamedValues(entity): _*)
       }
@@ -53,8 +54,8 @@ abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]] extends Repo
   }
 
   def deleteByIdentifier(identifier: ID)(implicit ctx: EntityIOContext): Try[(This, E)] = withDBSession(ctx) { implicit s =>
-    findBy(sqls.eq(column.c(primaryKeyName), identifier.value)).map { entity =>
-      if (deleteBy(sqls.eq(column.c(primaryKeyName), identifier.value)) > 0) {
+    findBy(sqls.eq(defaultAlias.field(primaryKeyName), identifier.value)).map { entity =>
+      if (deleteBy(sqls.eq(column.field(primaryKeyName), identifier.value)) > 0) {
         (this.asInstanceOf[This], entity)
       } else {
         throw RepositoryIOException(s"Failed to delete $identifier")
