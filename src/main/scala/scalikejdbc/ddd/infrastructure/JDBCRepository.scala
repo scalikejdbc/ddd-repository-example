@@ -28,7 +28,7 @@ abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]] extends Repo
     countBy(sqls.eq(defaultAlias.field(primaryKeyName), identifier.value)) > 0
   }
 
-  override def existByIdentifiers(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Boolean] = withDBSession(ctx) { implicit s =>
+  override def existByIdentifiers(identifiers: ID*)(implicit ctx: Ctx): Try[Boolean] = withDBSession(ctx) { implicit s =>
     countBy(sqls.in(defaultAlias.field(primaryKeyName), identifiers.map(_.value))) > 0
   }
 
@@ -36,8 +36,8 @@ abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]] extends Repo
     findBy(sqls.eq(defaultAlias.field(primaryKeyName), identifier.value)).getOrElse(throw EntityNotFoundException(identifier))
   }
 
-  override def resolveEntities(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Seq[E]] = withDBSession(ctx) { implicit s =>
-    findAllBy(sqls.eq(defaultAlias.field(primaryKeyName), identifiers.map(_.value)))
+  override def resolveEntities(identifiers: ID*)(implicit ctx: Ctx): Try[Seq[E]] = withDBSession(ctx) { implicit s =>
+    findAllBy(sqls.in(defaultAlias.field(primaryKeyName), identifiers.map(_.value)))
   }
 
   def storeEntity(entity: E)(implicit ctx: EntityIOContext): Try[(This, E)] = withDBSession(ctx) { implicit s =>

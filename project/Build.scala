@@ -6,7 +6,7 @@ object ScalikeJDBCDDDRepositoryProject extends Build {
   lazy val library = Project (id = "library", base = file("."), 
     settings =  Defaults.defaultSettings ++ Seq(
       organization := "org.scalikejdbc",
-      name         := "scalikejdbc-ddd-repository",
+      name         := "ddd-repository-example",
       scalaVersion := "2.10.3",
       version      := "0.1.0-SNAPSHOT",
       libraryDependencies <++= (scalaVersion) { scalaVersion => Seq(
@@ -36,7 +36,7 @@ object ScalikeJDBCDDDRepositoryProject extends Build {
     publishMavenStyle := true,
     publishArtifact in Test := false,
     pomIncludeRepository := { x => false },
-    pomExtra := <url>https://github.com/scalikejdbc/scalikejdbc-ddd-repository</url>
+    pomExtra := <url>https://github.com/scalikejdbc/ddd-repository-example</url>
       <licenses>
         <license>
           <name>Apache License, Version 2.0</name>
@@ -45,14 +45,19 @@ object ScalikeJDBCDDDRepositoryProject extends Build {
         </license>
       </licenses>
       <scm>
-        <url>git@github.com:scalikejdbc/scalikejdbc-ddd-repository.git</url>
-        <connection>scm:git:git@github.com:scalikejdbc/scalikejdbc-ddd-repository.git</connection>
+        <url>git@github.com:scalikejdbc/ddd-repository-example.git</url>
+        <connection>scm:git:git@github.com:scalikejdbc/ddd-repository-example.git</connection>
       </scm>
       <developers>
         <developer>
           <id>j5ik2o</id>
           <name>Junichi Kato</name>
           <url>https://github.com/j5ik2o</url>
+        </developer>
+        <developer>
+          <id>seratch</id>
+          <name>Kazuhiro Sera</name>
+          <url>https://github.com/seratch</url>
         </developer>
       </developers>
   )

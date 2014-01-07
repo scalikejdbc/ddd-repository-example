@@ -16,17 +16,17 @@ trait Repository[ID <: Identifier[_], E <: Entity[ID]] {
 
   def existByIdentifier(identifier: ID)(implicit ctx: Ctx): Try[Boolean]
 
-  def existByIdentifiers(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Boolean] = {
+  def existByIdentifiers(identifiers: ID*)(implicit ctx: Ctx): Try[Boolean] = {
     traverse(identifiers)(existByIdentifier).map(_.forall(_ == true))
   }
 
   def resolveEntity(identifier: ID)(implicit ctx: Ctx): Try[E]
 
-  def resolveEntities(identifiers: Seq[ID])(implicit ctx: Ctx): Try[Seq[E]] = traverse(identifiers)(resolveEntity)
+  def resolveEntities(identifiers: ID*)(implicit ctx: Ctx): Try[Seq[E]] = traverse(identifiers)(resolveEntity)
 
   def storeEntity(entity: E)(implicit ctx: Ctx): Try[(This, E)]
 
-  def storeEntities(entities: Seq[E])(implicit ctx: Ctx): Try[(This, Seq[E])] = {
+  def storeEntities(entities: E*)(implicit ctx: Ctx): Try[(This, Seq[E])] = {
     // asInstanceOf is required
     traverseWithThis(entities) { (repo, entity) => repo.storeEntity(entity).asInstanceOf[Try[(This, E)]] }
   }

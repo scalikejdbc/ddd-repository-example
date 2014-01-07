@@ -5,7 +5,7 @@ import scalikejdbc.ddd.infrastructure.JDBCRepository
 
 case class PersonJDBCRepository() extends JDBCRepository[PersonId, Person] with PersonRepository {
   type This = PersonRepository
-  override def defaultAlias = createAlias("p")
+  override def defaultAlias = createAlias("p") // must be `def`
   override val connectionPoolName = 'person
   override val tableName = "person"
 
