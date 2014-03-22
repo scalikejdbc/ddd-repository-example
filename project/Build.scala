@@ -3,23 +3,28 @@ import Keys._
 
 object ScalikeJDBCDDDRepositoryProject extends Build {
 
-  lazy val library = Project (id = "library", base = file("."), 
-    settings =  Defaults.defaultSettings ++ Seq(
+  val scalikeJDBCVersion = "1.7.4"
+  val skinnyORMVersion = "1.0.0-RC11"
+
+  lazy val ddd = Project (id = "ddd", base = file("."), 
+    // value defaultSettings in object Defaults is deprecated: 0.13.2
+    //settings =  Defaults.defaultSettings ++ Seq(
+    settings =  Seq(
       organization := "org.scalikejdbc",
       name         := "ddd-repository-example",
       scalaVersion := "2.10.3",
       version      := "0.1.0-SNAPSHOT",
       libraryDependencies <++= (scalaVersion) { scalaVersion => Seq(
-        "org.scalikejdbc"        %% "scalikejdbc"               % "[1.7,)"  % "compile",
-        "org.scalikejdbc"        %% "scalikejdbc-interpolation" % "[1.7,)"  % "compile",
-        "org.skinny-framework"   %% "skinny-orm"                % "[0.9,)"  % "compile",
-        "org.scalikejdbc"        %% "scalikejdbc-test"          % "[1.7,)"  % "test",
-        "com.h2database"         %  "h2"                        % "1.3.174" % "test",
-        "org.json4s"             %% "json4s-ext"                % "3.2.4"   % "test",
-        "org.json4s"             %% "json4s-jackson"            % "3.2.4"   % "test",
-        "ch.qos.logback"         %  "logback-classic"           % "1.0.13"  % "test",
-        "com.github.nscala-time" %% "nscala-time"               % "0.6.0"   % "test",
-        "org.specs2"             %% "specs2"                    % "2.0"     % "test"
+        "org.scalikejdbc"        %% "scalikejdbc"               % scalikeJDBCVersion % "compile",
+        "org.scalikejdbc"        %% "scalikejdbc-interpolation" % scalikeJDBCVersion % "compile",
+        "org.skinny-framework"   %% "skinny-orm"                % skinnyORMVersion   % "compile",
+        "org.scalikejdbc"        %% "scalikejdbc-test"          % scalikeJDBCVersion % "test",
+        "com.h2database"         %  "h2"                        % "1.3.175"    % "test",
+        "org.json4s"             %% "json4s-ext"                % "3.2.7"      % "test",
+        "org.json4s"             %% "json4s-jackson"            % "3.2.7"      % "test",
+        "ch.qos.logback"         %  "logback-classic"           % "1.1.1"      % "test",
+        "com.github.nscala-time" %% "nscala-time"               % "0.8.0"      % "test",
+        "org.specs2"             %% "specs2"                    % "2.3.9"      % "test"
       )}
     ) ++ sonatypeSettings
   )
