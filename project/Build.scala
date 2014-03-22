@@ -24,7 +24,7 @@ object ScalikeJDBCDDDRepositoryProject extends Build {
         "org.json4s"             %% "json4s-jackson"            % "3.2.7"      % "test",
         "ch.qos.logback"         %  "logback-classic"           % "1.1.1"      % "test",
         "com.github.nscala-time" %% "nscala-time"               % "0.8.0"      % "test",
-        "org.specs2"             %% "specs2"                    % "2.3.9"      % "test"
+        "org.specs2"             %% "specs2"                    % "2.3.10"     % "test"
       )}
     ) ++ sonatypeSettings
   )
