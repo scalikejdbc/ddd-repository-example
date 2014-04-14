@@ -62,3 +62,5 @@ sbt
 
 logs
 sandbox/db
+
+*.swp
