@@ -3,14 +3,14 @@ import Keys._
 
 object ScalikeJDBCDDDRepositoryProject extends Build {
 
-  val scalikeJDBCVersion = "2.2.0"
-  val skinnyORMVersion = "1.3.4"
+  val scalikeJDBCVersion = "2.2.8"
+  val skinnyORMVersion = "1.3.20"
 
   lazy val ddd = Project (id = "ddd", base = file("."), 
     settings =  Seq(
       organization := "org.scalikejdbc",
       name         := "ddd-repository-example",
-      scalaVersion := "2.11.4",
+      scalaVersion := "2.11.7",
       version      := "0.1.0-SNAPSHOT",
       libraryDependencies <++= (scalaVersion) { scalaVersion => Seq(
         "org.scalikejdbc"        %% "scalikejdbc"        % scalikeJDBCVersion % "compile",
