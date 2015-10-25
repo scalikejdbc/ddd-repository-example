@@ -3,7 +3,7 @@ package scalikejdbc.ddd.infrastructure
 import scala.util.Try
 import j5ik2o.ddd.infrastructure._
 
-import scalikejdbc._, SQLInterpolation._
+import scalikejdbc._
 import skinny.orm._
 
 /**

@@ -1,6 +1,6 @@
 package persondb.domain.person
 
-import scalikejdbc._, SQLInterpolation._
+import scalikejdbc._
 import scalikejdbc.ddd.infrastructure.JDBCRepository
 
 case class PersonJDBCRepository() extends JDBCRepository[PersonId, Person] with PersonRepository {

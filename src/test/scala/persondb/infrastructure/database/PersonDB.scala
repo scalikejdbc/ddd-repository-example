@@ -1,6 +1,6 @@
 package persondb.infrastructure.database
 
-import scalikejdbc._, SQLInterpolation._
+import scalikejdbc._
 
 trait PersonDB {
 
