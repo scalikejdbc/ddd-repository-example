@@ -68,7 +68,7 @@ class JDBCRepositorySpec extends org.specs2.mutable.Specification with PersonDB 
         val (id1, id2) = (PersonId(), PersonId())
         val (e1, e2) = (Person(id1, Name("Junichi", "Kato")), Person(id2, Name("Kazuhiro", "Sera")))
         repository.storeEntities(e1, e2) must beSuccessfulTry
-        repository.resolveEntities(id1, id2) must beSuccessfulTry.like { case entities => entities must_== Seq(e1, e2) }
+        repository.resolveEntities(id1, id2) must beSuccessfulTry.like { case entities => entities.toSet must_== Set(e1, e2) }
       }
     }
 
