@@ -3,22 +3,22 @@ import Keys._
 
 object ScalikeJDBCDDDRepositoryProject extends Build {
 
-  val scalikeJDBCVersion = "2.3.5"
-  val skinnyORMVersion = "2.0.7"
+  val scalikeJDBCVersion = "2.4.2"
+  val skinnyORMVersion = "2.1.2"
 
   lazy val ddd = Project (id = "ddd", base = file("."), 
     settings =  Seq(
       organization := "org.scalikejdbc",
       name         := "ddd-repository-example",
-      scalaVersion := "2.11.7",
+      scalaVersion := "2.11.8",
       version      := "0.1.0-SNAPSHOT",
       libraryDependencies <++= (scalaVersion) { scalaVersion => Seq(
         "org.scalikejdbc"        %% "scalikejdbc"        % scalikeJDBCVersion % "compile",
         "org.skinny-framework"   %% "skinny-orm"         % skinnyORMVersion   % "compile",
         "org.scalikejdbc"        %% "scalikejdbc-test"   % scalikeJDBCVersion % "test",
-        "com.h2database"         %  "h2"                 % "1.4.191"    % "test",
-        "ch.qos.logback"         %  "logback-classic"    % "1.1.5"      % "test",
-        "org.specs2"             %% "specs2-core"        % "2.4.17"     % "test"
+        "com.h2database"         %  "h2"                 % "1.4.192"    % "test",
+        "ch.qos.logback"         %  "logback-classic"    % "1.1.7"      % "test",
+        "org.specs2"             %% "specs2-core"        % "2.5"        % "test"
       )}
     ) ++ sonatypeSettings
   )

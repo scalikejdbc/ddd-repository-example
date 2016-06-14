@@ -9,7 +9,7 @@ import skinny.orm._
 /**
  * JDBC Repository implementation.
  */
-abstract class JDBCRepository[ID <: Identifier[_], E <: Entity[ID]] extends Repository[ID, E] with SkinnyCRUDMapper[E] {
+abstract class JDBCRepository[A: ParameterBinderFactory, ID <: Identifier[A], E <: Entity[ID]] extends Repository[ID, E] with SkinnyCRUDMapper[E] {
 
   override def primaryKeyFieldName = "id"
   override def defaultAlias = createAlias(tableName)
