@@ -4,7 +4,7 @@ import Keys._
 object ScalikeJDBCDDDRepositoryProject extends Build {
 
   val scalikeJDBCVersion = "2.4.2"
-  val skinnyORMVersion = "2.1.2"
+  val skinnyORMVersion = "2.2.0"
 
   lazy val ddd = Project (id = "ddd", base = file("."), 
     settings =  Seq(
