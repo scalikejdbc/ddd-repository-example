@@ -1,11 +1,11 @@
-val scalikeJDBCVersion = "2.4.2"
-val skinnyORMVersion = "2.2.0"
+val scalikeJDBCVersion = "2.5.0"
+val skinnyORMVersion = "2.3.0-RC1"
 
 organization := "org.scalikejdbc"
 
 name         := "ddd-repository-example"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.0"
 
 version      := "0.1.0-SNAPSHOT"
 
@@ -13,14 +13,14 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc"        %% "scalikejdbc"        % scalikeJDBCVersion % "compile",
   "org.skinny-framework"   %% "skinny-orm"         % skinnyORMVersion   % "compile",
   "org.scalikejdbc"        %% "scalikejdbc-test"   % scalikeJDBCVersion % "test",
-  "com.h2database"         %  "h2"                 % "1.4.192"    % "test",
+  "com.h2database"         %  "h2"                 % "1.4.193"    % "test",
   "ch.qos.logback"         %  "logback-classic"    % "1.1.7"      % "test",
-  "org.specs2"             %% "specs2-core"        % "2.5"        % "test"
+  "org.specs2"             %% "specs2-core"        % "3.8.6"      % "test"
 )
 
-publishTo <<= version { (v: String) =>
+publishTo := {
   val nexus = "https://oss.sonatype.org/"
-  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
+  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
   else Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
 
@@ -60,5 +60,3 @@ pomExtra := <url>https://github.com/scalikejdbc/ddd-repository-example</url>
   </developers>
 
 scalariformSettings
- 
-net.virtualvoid.sbt.graph.Plugin.graphSettings
