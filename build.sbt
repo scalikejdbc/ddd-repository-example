@@ -1,11 +1,11 @@
 val scalikeJDBCVersion = "2.5.0"
-val skinnyORMVersion = "2.3.0"
+val skinnyORMVersion = "2.3.1"
 
 organization := "org.scalikejdbc"
 
 name         := "ddd-repository-example"
 
-scalaVersion := "2.12.0"
+scalaVersion := "2.12.1"
 
 version      := "0.1.0-SNAPSHOT"
 
