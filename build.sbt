@@ -1,11 +1,11 @@
-val scalikeJDBCVersion = "2.5.0"
-val skinnyORMVersion = "2.3.1"
+val scalikeJDBCVersion = "2.5.2"
+val skinnyORMVersion = "2.3.7"
 
 organization := "org.scalikejdbc"
 
 name         := "ddd-repository-example"
 
-scalaVersion := "2.12.1"
+scalaVersion := "2.12.2"
 
 version      := "0.1.0-SNAPSHOT"
 
@@ -13,9 +13,9 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc"        %% "scalikejdbc"        % scalikeJDBCVersion % "compile",
   "org.skinny-framework"   %% "skinny-orm"         % skinnyORMVersion   % "compile",
   "org.scalikejdbc"        %% "scalikejdbc-test"   % scalikeJDBCVersion % "test",
-  "com.h2database"         %  "h2"                 % "1.4.193"    % "test",
-  "ch.qos.logback"         %  "logback-classic"    % "1.1.7"      % "test",
-  "org.specs2"             %% "specs2-core"        % "3.8.6"      % "test"
+  "com.h2database"         %  "h2"                 % "1.4.195"    % "test",
+  "ch.qos.logback"         %  "logback-classic"    % "1.2.3"      % "test",
+  "org.specs2"             %% "specs2-core"        % "3.8.9"      % "test"
 )
 
 publishTo := {
