@@ -13,19 +13,16 @@ case class PersonJDBCRepository() extends JDBCRepository[UUID, PersonId, Person]
 
   override def extract(rs: WrappedResultSet, p: ResultName[Person]): Person = new Person(
     id = PersonId(UUID.fromString(rs.get(p.id))),
-    name = Name(rs.get(p.field("firstName")), rs.get(p.field("lastName")))
-  )
+    name = Name(rs.get(p.field("firstName")), rs.get(p.field("lastName"))))
 
   override def toNamedValues(entity: Person): Seq[(Symbol, Any)] = Seq(
     'id -> entity.id.value,
     'firstName -> entity.name.firstName,
-    'lastName -> entity.name.lastName
-  )
+    'lastName -> entity.name.lastName)
 }
 
 object PersonJDBCRepository {
   // https://github.com/scalikejdbc/scalikejdbc/issues/520
-  implicit val uuidBinderFactory: ParameterBinderFactory[UUID] = ParameterBinderFactory {
-    value => (stmt, idx) => stmt.setObject(idx, value)
+  implicit val uuidBinderFactory: ParameterBinderFactory[UUID] = ParameterBinderFactory { value => (stmt, idx) => stmt.setObject(idx, value)
   }
 }

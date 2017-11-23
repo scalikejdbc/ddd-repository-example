@@ -7,7 +7,7 @@ import j5ik2o.ddd.infrastructure.onmemory.{ OnMemoryRepository, OnMemoryEntityIO
 class OnMemoryRepositorySpec extends Specification {
 
   case class PersonOnMemoryRepository(entities: Map[PersonId, Person] = Map.empty)
-      extends OnMemoryRepository[PersonId, Person](entities) with PersonRepository {
+    extends OnMemoryRepository[PersonId, Person](entities) with PersonRepository {
     type This = PersonRepository
     protected def createInstance(entities: Map[PersonId, Person]): This = new PersonOnMemoryRepository(entities)
   }
