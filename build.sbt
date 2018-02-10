@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc"        %% "scalikejdbc-test"   % scalikeJDBCVersion % "test",
   "com.h2database"         %  "h2"                 % "1.4.196"    % "test",
   "ch.qos.logback"         %  "logback-classic"    % "1.2.3"      % "test",
-  "org.specs2"             %% "specs2-core"        % "4.0.1"      % "test"
+  "org.specs2"             %% "specs2-core"        % "4.0.2"      % "test"
 )
 
 publishTo := {
