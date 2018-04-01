@@ -1,5 +1,5 @@
-val scalikeJDBCVersion = "3.1.0"
-val skinnyORMVersion = "2.5.2"
+val scalikeJDBCVersion = "3.2.3"
+val skinnyORMVersion = "2.6.0"
 
 organization := "org.scalikejdbc"
 
@@ -13,9 +13,9 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc"        %% "scalikejdbc"        % scalikeJDBCVersion % "compile",
   "org.skinny-framework"   %% "skinny-orm"         % skinnyORMVersion   % "compile",
   "org.scalikejdbc"        %% "scalikejdbc-test"   % scalikeJDBCVersion % "test",
-  "com.h2database"         %  "h2"                 % "1.4.196"    % "test",
+  "com.h2database"         %  "h2"                 % "1.4.197"    % "test",
   "ch.qos.logback"         %  "logback-classic"    % "1.2.3"      % "test",
-  "org.specs2"             %% "specs2-core"        % "4.0.2"      % "test"
+  "org.specs2"             %% "specs2-core"        % "4.0.3"      % "test"
 )
 
 publishTo := {
