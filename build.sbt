@@ -5,7 +5,7 @@ organization := "org.scalikejdbc"
 
 name         := "ddd-repository-example"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.8"
 
 version      := "0.1.0-SNAPSHOT"
 
