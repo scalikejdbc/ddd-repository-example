@@ -1,4 +1,4 @@
-val scalikeJDBCVersion = "3.3.1"
+val scalikeJDBCVersion = "3.3.2"
 val skinnyORMVersion = "3.0.1"
 
 organization := "org.scalikejdbc"
