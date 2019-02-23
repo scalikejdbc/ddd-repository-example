@@ -13,7 +13,7 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc"        %% "scalikejdbc"        % scalikeJDBCVersion % "compile",
   "org.skinny-framework"   %% "skinny-orm"         % skinnyORMVersion   % "compile",
   "org.scalikejdbc"        %% "scalikejdbc-test"   % scalikeJDBCVersion % "test",
-  "com.h2database"         %  "h2"                 % "1.4.197"    % "test",
+  "com.h2database"         %  "h2"                 % "1.4.198"    % "test",
   "ch.qos.logback"         %  "logback-classic"    % "1.2.3"      % "test",
   "org.specs2"             %% "specs2-core"        % "4.3.6"      % "test"
 )
