@@ -10,6 +10,6 @@ case class EntityNotFoundException(message: String) extends Exception(message)
  */
 object EntityNotFoundException {
 
-  def apply(identifier: Identifier[Any]): EntityNotFoundException = EntityNotFoundException(identifier)
+  def apply(identifier: Identifier[Any]): EntityNotFoundException = EntityNotFoundException(identifier.value.toString)
 
 }
